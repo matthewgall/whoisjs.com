@@ -3,6 +3,19 @@
 import os, socket, json
 from bottle import route, run, response
 
+def enable_cors(fn):
+    def _enable_cors(*args, **kwargs):
+        # set CORS headers
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+
+        if bottle.request.method != 'OPTIONS':
+            # actual request; reply with the actual response
+            return fn(*args, **kwargs)
+
+    return _enable_cors
+
 def lookup(domain, server="whois.cloudflare.com"):
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -24,6 +37,7 @@ def lookup(domain, server="whois.cloudflare.com"):
     except:
         return None
 
+@enable_cors
 @route('/api/v1/<domain>')
 def get_domain(domain):
     try:
