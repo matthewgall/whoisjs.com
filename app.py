@@ -24,7 +24,7 @@ def lookup(domain, server="whois.cloudflare.com"):
     except:
         return None
 
-@route('/api/v1/get/<domain>')
+@route('/api/v1/<domain>')
 def get_domain(domain):
     try:
         l = lookup(domain)     
