@@ -39,9 +39,10 @@ def lookup(domain, server="whois.cloudflare.com"):
 
 @enable_cors
 @route('/api/v1/<domain>')
-def get_domain(domain):
+@route('/api/v1/<domain>/<server>')
+def get_domain(domain, server='whois.cloudflare.com'):
     try:
-        l = lookup(domain)     
+        l = lookup(domain, server)     
         data = {
             'success': 'true',
             'data': l
