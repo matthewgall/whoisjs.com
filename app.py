@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os, socket, json
-from bottle import route, run, response
+from bottle import route, run, response, static_file
 
 def enable_cors(fn):
     def _enable_cors(*args, **kwargs):
@@ -37,12 +37,17 @@ def lookup(domain, server="whois.cloudflare.com"):
     except:
         return None
 
+@route('/favicon.ico')
+def favicon():
+    response.content_type = 'image/x-icon'
+    return static_file('favicon.ico', './')
+
 @enable_cors
 @route('/api/v1/<domain>')
 @route('/api/v1/<domain>/<server>')
 def get_domain(domain, server='whois.cloudflare.com'):
     data = {
-        'success': false
+        'success': False
     }
 
     try:
