@@ -73,6 +73,7 @@ def get_domain(domain, server='whois.cloudflare.com'):
         data['success'] = True
         data['raw_data'] = l
     except:
+        del data['parsed']
         pass
     response.content_type = 'application/json'
     return json.dumps(data)
