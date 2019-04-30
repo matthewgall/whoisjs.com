@@ -44,12 +44,12 @@ def get_domain(domain, server='whois.cloudflare.com'):
     try:
         l = lookup(domain, server)     
         data = {
-            'success': 'true',
+            'success': True,
             'data': l
         }
     except:
         data = {
-            'success': 'false'
+            'success': False
         }
     response.content_type = 'application/json'
     return json.dumps(data)
