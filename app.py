@@ -40,4 +40,4 @@ def get_domain(domain):
     return json.dumps(data)
 
 if __name__ == "__main__":
-    run(host=os.getenv('HOST'), port=os.getenv('PORT'))
+    run(host=os.getenv('HOST', '0.0.0.0'), port=os.getenv('PORT', 8000))
