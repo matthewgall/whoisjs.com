@@ -41,16 +41,16 @@ def lookup(domain, server="whois.cloudflare.com"):
 @route('/api/v1/<domain>')
 @route('/api/v1/<domain>/<server>')
 def get_domain(domain, server='whois.cloudflare.com'):
+    data = {
+        'success': false
+    }
+
     try:
         l = lookup(domain, server)     
-        data = {
-            'success': True,
-            'data': l
-        }
+        data['success'] = True
+        data['data'] = l
     except:
-        data = {
-            'success': False
-        }
+        pass
     response.content_type = 'application/json'
     return json.dumps(data)
 
