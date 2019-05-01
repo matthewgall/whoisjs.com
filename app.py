@@ -53,8 +53,6 @@ def get_domain(domain, server='whois.cloudflare.com'):
     try:
         l = lookup(domain, server)
 
-        data['parsed'] = {}
-
         # now we look to try and parse it
         output = list(filter(None, l.split('\n')))
         for o in output:
@@ -62,18 +60,20 @@ def get_domain(domain, server='whois.cloudflare.com'):
             key = parsed_data[0].split(' ')
             if key[0] in ['domain', 'registry', 'registrar', 'tech', 'admin', 'billing', 'updated', 'creation']:
                 elm = parsed_data[0].replace("{} ".format(key[0]), "").replace(' ', '_').replace('/', '_')
-                if not data['parsed'].get(key[0]):
-                    data['parsed'][key[0]] = {}
-                    data['parsed'][key[0]][elm] = o.lower().split(':', 1)[1].strip()
+                val = o.lower().split(':', 1)[1].strip()
+                if not data.get(key[0]):
+                    data[key[0]] = {}
+                    if not val == '': 
+                        data[key[0]][elm] = val
                 else:
-                    data['parsed'][key[0]][elm] = o.lower().split(':', 1)[1].strip()
+                    if not val == '':
+                        data[key[0]][elm] = val
 
         # remove erroneous keys
-        del data['parsed']['domain']['status']
+        del data['domain']['status']
         data['success'] = True
-        data['raw_data'] = l
+        data['raw'] = l
     except:
-        del data['parsed']
         pass
     response.content_type = 'application/json'
     return json.dumps(data)
