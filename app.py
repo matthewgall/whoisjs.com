@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os, socket, json
-from bottle import route, run, response, static_file
+from bottle import route, run, response, request, static_file
 
 def enable_cors(fn):
     def _enable_cors(*args, **kwargs):
@@ -10,7 +10,7 @@ def enable_cors(fn):
         response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
         response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
 
-        if bottle.request.method != 'OPTIONS':
+        if request.method != 'OPTIONS':
             # actual request; reply with the actual response
             return fn(*args, **kwargs)
 
