@@ -72,7 +72,8 @@ def get_domain(domain, server='whois.cloudflare.com'):
         # remove erroneous keys
         del data['domain']['status']
         data['success'] = True
-        data['raw'] = l
+        if request.query.get('raw', False):
+            data['raw'] = l
     except:
         pass
     response.content_type = 'application/json'
