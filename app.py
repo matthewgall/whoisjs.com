@@ -60,7 +60,7 @@ def get_domain(domain, server='whois.cloudflare.com'):
             key = parsed_data[0].split(' ')
             if key[0] in ['domain', 'registry', 'registrar', 'tech', 'admin', 'billing', 'updated', 'creation']:
                 elm = parsed_data[0].replace("{} ".format(key[0]), "").replace(' ', '_').replace('/', '_')
-                val = o.lower().split(':', 1)[1].strip()
+                val = o.split(':', 1)[1].strip()
                 if not data.get(key[0]):
                     data[key[0]] = {}
                     if not val == '': 
