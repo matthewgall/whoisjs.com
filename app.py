@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os, socket, json
-from bottle import route, run, response, request, static_file
+from bottle import route, run, response, request, redirect, template, static_file
 
 def enable_cors(fn):
     def _enable_cors(*args, **kwargs):
@@ -42,10 +42,34 @@ def favicon():
     response.content_type = 'image/x-icon'
     return static_file('favicon.ico', './')
 
+@route('/static/<filepath:path>')
+def static(filepath):
+    return static_file(filepath, root='views/static')
+
+@route('/', ('GET', 'POST'))
+def index():
+	if request.method == "POST":
+		domain = request.forms.get('domain')
+		return redirect("/{}".format(domain))
+
+	return template("home")
+
+@route('/<domain>', ('GET'))
+def record(domain):
+    try:
+        l = lookup(domain)
+        return template("whois", {
+            'name': domain,
+            'data': l
+        })
+    except:
+        return "We encountered an error completing your request"
+
 @enable_cors
 @route('/api/v1/<domain>')
 @route('/api/v1/<domain>/<server>')
-def get_domain(domain, server='whois.cloudflare.com'):
+@route('/api/v1/<domain>/<server>/<raw>')
+def get_domain(domain, server='whois.cloudflare.com', raw=None):
     data = {
         'success': False
     }
@@ -72,7 +96,7 @@ def get_domain(domain, server='whois.cloudflare.com'):
         # remove erroneous keys
         del data['domain']['status']
         data['success'] = True
-        if request.query.get('raw', False):
+        if not raw == None:
             data['raw'] = l
     except:
         pass
