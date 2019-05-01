@@ -4,7 +4,7 @@
         <h1>Welcome to whoisjs.com</h1>
         <p class="lead">
             Need WHOIS? Need it in an application accessible method? <br />
-            If you need this, then dnsjson.com is for you!
+            If you need this, then whoisjs.com is for you!
         </p>
         <p>&nbsp;</p>
         <div class="panel panel-primary">
