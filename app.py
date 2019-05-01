@@ -108,7 +108,7 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 
 	# Server settings
-	parser.add_argument("-i", "--host", default=os.getenv('IP', '127.0.0.1'), help="server ip")
+	parser.add_argument("-i", "--host", default=os.getenv('HOST', '127.0.0.1'), help="server ip")
 	parser.add_argument("-p", "--port", default=os.getenv('PORT', 5000), help="server port")
 
 	# Redis settings
