@@ -163,11 +163,6 @@ def get_domain(domain, server=None):
 			except:
 				pass
 
-	# remove erroneous keys
-	try:
-		del data['domain']['status']
-	except KeyError:
-		pass
 	data['success'] = True
 	data['raw'] = l
 	return json.dumps(data)
