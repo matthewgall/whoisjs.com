@@ -50,6 +50,11 @@ def get_whois(domain):
 	except:
 		return None
 
+@route('/robots.txt')
+def robots():
+	response.content_type = 'text/plain'
+	return template("robots")
+
 @route('/favicon.ico')
 def favicon():
 	response.content_type = 'image/x-icon'
