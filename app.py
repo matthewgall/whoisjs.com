@@ -39,6 +39,17 @@ def lookup(domain, server="whois.cloudflare.com"):
 	except:
 		return None
 
+def get_whois(domain):
+	try:
+		tld = extract(domain).suffix
+		# next we do a lookup against whois.iana.org
+		d = lookup(tld, "whois.iana.org")
+		# and find the whois server
+		r = re.findall(r"whois:\s*(.*)", d)
+		return r[0]
+	except:
+		return None
+
 @route('/favicon.ico')
 def favicon():
 	response.content_type = 'image/x-icon'
@@ -70,20 +81,7 @@ def record(domain, server=None):
 		
 		# Now, if they haven't set a server, we'll default to the TLD one
 		if not server:
-			tld = extract(domain).suffix
-			# next we do a lookup against whois.iana.org
-			d = lookup(tld, "whois.iana.org")
-			# and find the whois server
-			r = re.findall(r"whois:\s*(.*)", d)
-			server = r[0]
-		else:
-			try:
-				if not validators.domain(server):
-					raise ValueError
-			except:
-				return template("error", {
-					'message': 'The whois server provided is not valid. Please check and try again'
-				})
+			server = get_whois(domain)
 
 		log.info("Using server: {} for domain: {}".format(server, domain))
 		l = lookup(domain, server)
@@ -100,8 +98,7 @@ def record(domain, server=None):
 @enable_cors
 @route('/api/v1/<domain>')
 @route('/api/v1/<domain>/<server>')
-@route('/api/v1/<domain>/<server>/<raw>')
-def get_domain(domain, server='whois.cloudflare.com', raw=None):
+def get_domain(domain, server=None):
 	data = {
 		'success': False
 	}
@@ -115,15 +112,20 @@ def get_domain(domain, server='whois.cloudflare.com', raw=None):
 		data['error'] = "The domain name provided is not valid"
 		return json.dumps(data)
 
-	try:
-		l = lookup(domain, server)
+	# Now, if they haven't set a server, we'll default to the TLD one
+	if not server:
+		server = get_whois(domain)
 
-		# now we look to try and parse it
-		output = list(filter(None, l.split('\n')))
-		for o in output:
-			parsed_data = o.lower().split(':')
-			key = parsed_data[0].split(' ')
-			if key[0] in ['domain', 'registry', 'registrar', 'tech', 'admin', 'billing', 'updated', 'creation']:
+	log.info("Using server: {} for domain: {}".format(server, domain))
+	l = lookup(domain, server)
+
+	# now we look to try and parse it
+	output = list(filter(None, l.split('\n')))
+	for o in output:
+		parsed_data = o.lower().strip().split(':')
+		key = parsed_data[0].split(' ')
+		if key[0] in ['domain', 'registry', 'registrar', 'tech', 'admin', 'billing', 'updated', 'creation']:
+			try:
 				elm = parsed_data[0].replace("{} ".format(key[0]), "").replace(' ', '_').replace('/', '_')
 				val = o.split(':', 1)[1].strip()
 				if not data.get(key[0]):
@@ -133,14 +135,13 @@ def get_domain(domain, server='whois.cloudflare.com', raw=None):
 				else:
 					if not val == '':
 						data[key[0]][elm] = val
+			except:
+				pass
 
-		# remove erroneous keys
-		del data['domain']['status']
-		data['success'] = True
-		if not raw == None:
-			data['raw'] = l
-	except:
-		pass
+	# remove erroneous keys
+	del data['domain']['status']
+	data['success'] = True
+	data['raw'] = l
 	return json.dumps(data)
 
 if __name__ == '__main__':
