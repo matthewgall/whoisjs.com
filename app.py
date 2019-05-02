@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-import os, socket, json, logging, argparse
+import os, socket, json, logging, argparse, re
 from bottle import default_app, route, run, response, request, redirect, template, static_file
+from tldextract import extract
 import validators
 
 def enable_cors(fn):
@@ -57,18 +58,34 @@ def index():
 
 @route('/<domain>', ('GET'))
 @route('/<domain>/<server>', ('GET'))
-def record(domain, server="whois.cloudflare.com"):
+def record(domain, server=None):
 	try:
 		try:
 			if not validators.domain(domain):
-				raise ValueError
-			if not validators.domain(server):
 				raise ValueError
 		except:
 			return template("error", {
 				'message': 'The domain name provided is not valid. Please check and try again'
 			})
 		
+		# Now, if they haven't set a server, we'll default to the TLD one
+		if not server:
+			tld = extract(domain).suffix
+			# next we do a lookup against whois.iana.org
+			d = lookup(tld, "whois.iana.org")
+			# and find the whois server
+			r = re.findall(r"whois:\s*(.*)", d)
+			server = r[0]
+		else:
+			try:
+				if not validators.domain(server):
+					raise ValueError
+			except:
+				return template("error", {
+					'message': 'The whois server provided is not valid. Please check and try again'
+				})
+
+		log.info("Using server: {} for domain: {}".format(server, domain))
 		l = lookup(domain, server)
 		return template("whois", {
 			'path': request.path,
