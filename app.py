@@ -112,6 +112,7 @@ def get_whois_server(domain):
 
 	# Now, if they haven't set a server, we'll default to the TLD one
 	data['server'] = get_whois(domain)
+	data['success'] = True
 	return json.dumps(data)
 	
 @enable_cors
