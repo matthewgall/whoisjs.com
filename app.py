@@ -96,6 +96,25 @@ def record(domain, server=None):
 		})
 
 @enable_cors
+@route('/api/v1/whois/<domain>')
+def get_whois_server(domain):
+	data = {
+		'success': False
+	}
+
+	response.content_type = 'application/json'
+	try:
+		if not validators.domain(domain):
+			raise ValueError
+	except:
+		data['error'] = "The domain name provided is not valid"
+		return json.dumps(data)
+
+	# Now, if they haven't set a server, we'll default to the TLD one
+	data['server'] = get_whois(domain)
+	return json.dumps(data)
+	
+@enable_cors
 @route('/api/v1/<domain>')
 @route('/api/v1/<domain>/<server>')
 def get_domain(domain, server=None):
