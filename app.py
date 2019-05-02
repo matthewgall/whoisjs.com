@@ -56,23 +56,29 @@ def index():
 	return template("home")
 
 @route('/<domain>', ('GET'))
-def record(domain):
+@route('/<domain>/<server>', ('GET'))
+def record(domain, server="whois.cloudflare.com"):
 	try:
 		try:
 			if not validators.domain(domain):
+				raise ValueError
+			if not validators.domain(server):
 				raise ValueError
 		except:
 			return template("error", {
 				'message': 'The domain name provided is not valid. Please check and try again'
 			})
 		
-		l = lookup(domain)
+		l = lookup(domain, server)
 		return template("whois", {
+			'path': request.path,
 			'name': domain,
 			'data': l
 		})
 	except:
-		return "We encountered an error completing your request"
+		return template("error", {
+			'message': "We encountered an error completing your request"
+		})
 
 @enable_cors
 @route('/api/v1/<domain>')

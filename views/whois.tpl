@@ -18,7 +18,7 @@
                 <p>
                 Verify the results using curl:
                 </p>
-                <pre>curl https://whoisjs.com/api/v1/{{name}}</pre>
+                <pre>curl https://whoisjs.com/api/v1{{path}}</pre>
             </div>
         </div>
         
