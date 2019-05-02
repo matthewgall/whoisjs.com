@@ -2,6 +2,7 @@
 
 import os, socket, json, logging, argparse
 from bottle import default_app, route, run, response, request, redirect, template, static_file
+import validators
 
 def enable_cors(fn):
 	def _enable_cors(*args, **kwargs):
@@ -57,6 +58,14 @@ def index():
 @route('/<domain>', ('GET'))
 def record(domain):
 	try:
+		try:
+			if not validators.domain(domain):
+				raise ValueError
+		except:
+			return template("error", {
+				'message': 'The domain name provided is not valid. Please check and try again'
+			})
+		
 		l = lookup(domain)
 		return template("whois", {
 			'name': domain,
@@ -73,6 +82,15 @@ def get_domain(domain, server='whois.cloudflare.com', raw=None):
 	data = {
 		'success': False
 	}
+
+	response.content_type = 'application/json'
+
+	try:
+		if not validators.domain(domain):
+			raise ValueError
+	except:
+		data['error'] = "The domain name provided is not valid"
+		return json.dumps(data)
 
 	try:
 		l = lookup(domain, server)
@@ -100,7 +118,6 @@ def get_domain(domain, server='whois.cloudflare.com', raw=None):
 			data['raw'] = l
 	except:
 		pass
-	response.content_type = 'application/json'
 	return json.dumps(data)
 
 if __name__ == '__main__':

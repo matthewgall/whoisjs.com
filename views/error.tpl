@@ -3,7 +3,7 @@
     <div class="starter-template">
         <h1>Uh oh...</h1>
         <p class="lead">
-            Looks like we encountered an error. You might wish to go back, and try again.
+            {{message}}
         </p>
     </div>
 </div>
