@@ -147,22 +147,14 @@ def get_domain(domain, server=None):
 	# now we look to try and parse it
 	output = list(filter(None, l.split('\n')))
 	for o in output:
-		parsed_data = o.lower().strip().split(':')
-		key = parsed_data[0].split(' ')
-		if key[0] in ['domain', 'registry', 'registrar', 'tech', 'admin', 'billing', 'updated', 'creation']:
-			try:
-				elm = parsed_data[0].replace("{} ".format(key[0]), "").replace(' ', '_').replace('/', '_')
-				val = o.split(':', 1)[1].strip()
-				if not data.get(key[0]):
-					data[key[0]] = {}
-					if not val == '': 
-						data[key[0]][elm] = val
-				else:
-					if not val == '':
-						data[key[0]][elm] = val
-			except:
-				pass
-
+		m = re.findall(r"^((domain|registry|registrar|creation|updated|admin|tech|billing)\s([\w\s]*)):(.*)", o.lower().strip())
+		if len(m) > 0:
+			r = m[0]
+			if not data.get(r[1]):
+				data[r[1]] = {}
+			val = r[2].replace(' ', '_')
+			data[r[1]][val] = r[3].strip()
+	
 	data['success'] = True
 	data['raw'] = l
 	return json.dumps(data)
