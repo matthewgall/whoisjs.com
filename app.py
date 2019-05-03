@@ -3,7 +3,7 @@
 import os, socket, json, logging, argparse, re
 from bottle import default_app, route, run, response, request, redirect, template, static_file
 from tldextract import extract
-import validators
+import validators, redis
 
 def enable_cors(fn):
 	def _enable_cors(*args, **kwargs):
@@ -89,6 +89,7 @@ def record(domain, server=None):
 			server = get_whois(domain)
 
 		log.info("Using server: {} for domain: {}".format(server, domain))
+		
 		l = lookup(domain, server)
 		return template("whois", {
 			'path': request.path,
@@ -129,13 +130,21 @@ def get_domain(domain, server=None):
 	}
 
 	response.content_type = 'application/json'
-
+	
 	try:
 		if not validators.domain(domain):
 			raise ValueError
 	except:
 		data['error'] = "The domain name provided is not valid"
 		return json.dumps(data)
+
+	global red
+	try:
+		if red.get(request.path):
+			log.info("Using cached value for {}".format(request.path))
+			return red.get(request.path)
+	except:
+		pass
 
 	# Now, if they haven't set a server, we'll default to the TLD one
 	if not server:
@@ -155,8 +164,16 @@ def get_domain(domain, server=None):
 			val = r[2].replace(' ', '_')
 			data[r[1]][val] = r[3].strip()
 	
+	try:
+		del data['domain']['status']
+	except:
+		pass
+	
 	data['success'] = True
 	data['raw'] = l
+	
+	# and now we cache it in redis
+	red.set(request.path, json.dumps(data), ex=3600)
 	return json.dumps(data)
 
 if __name__ == '__main__':
@@ -168,6 +185,7 @@ if __name__ == '__main__':
 	parser.add_argument("-p", "--port", default=os.getenv('PORT', 5000), help="server port")
 
 	# Redis settings
+	parser.add_argument("--redis-url", default=os.getenv('REDIS_URL', None), help="redis url")
 	parser.add_argument("--redis-host", default=os.getenv('REDIS_HOST', 'redis'), help="redis hostname")
 	parser.add_argument("--redis-port", default=os.getenv('REDIS_PORT', 6379), help="redis port")
 	parser.add_argument("--redis-pw", default=os.getenv('REDIS_PW', ''), help="redis password")
@@ -185,6 +203,13 @@ if __name__ == '__main__':
 	else:
 		logging.basicConfig(level=logging.INFO)
 	log = logging.getLogger(__name__)
+
+	try:
+		if args.redis_url:
+			global red
+			red = redis.from_url(args.redis_url)
+	except:
+		log.fatal("Unable to connect to redis: {}".format(args.redis_url))
 
 	try:
 		app = default_app()
