@@ -103,7 +103,7 @@ def record(domain, server=None):
 		log.info("Using server: {} for domain: {}".format(server, domain))
 		
 		l = lookup(domain, server)
-		red.set(request.path, l)
+		red.set(request.path, l, ex=3600)
 		return template("whois", {
 			'path': request.path,
 			'name': domain,
