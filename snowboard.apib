@@ -1,0 +1,102 @@
+FORMAT: 1A
+HOST: https://whoisjs.com
+
+# whoisjs.com
+whoisjs.com is a simple service that transforms any whois server operating on a standard port into a JSON compatible API
+
+## Authentication
+Currently whoisjs.com does not provide authenticated access.
+
+## Error States
+The common [HTTP Response Status Codes](https://github.com/for-GET/know-your-http-well/blob/master/status-codes.md) are used.
+
+# Group Actions
+Performing lookups using whoisjs.com
+
+## WHOIS [/api/v1/{domain}/{server}]
+## Perform a whois lookup [GET]
++ Parameters
+    + domain: cloudflare.com (string) - domain name you wish to lookup
+    + server: whois.cloudflare.com (string, optional) - hostname of the whois server you wish to query (optional)
++ Response 200 (application/json)
+
+        {
+            "success": true,
+            "domain": {
+                "name": "CLOUDFLARE.COM",
+                "status": "clientupdateprohibited https://icann.org/epp#clientupdateprohibited"
+            },
+            "registry": {
+                "domain_id": "1542998887_DOMAIN_COM-VRSN"
+            },
+            "registrar": {
+                "whois_server": "whois.cloudflare.com",
+                "url": "https://www.cloudflare.com",
+                "abuse_contact_email": "registrar-abuse@cloudflare.com",
+                "abuse_contact_phone": "+1.4153197517",
+                "registration_expiration_date": "2024-02-17T22:07:54Z",
+                "registrar": "Cloudflare, Inc.",
+                "iana_id": "1910"
+            },
+            "updated": {
+                "date": "2018-11-28T22:58:02Z"
+            },
+            "creation": {
+                "date": "2009-02-17T22:07:54Z"
+            },
+            "admin": {
+                "name": "DATA REDACTED",
+                "organization": "DATA REDACTED",
+                "street": "DATA REDACTED",
+                "city": "DATA REDACTED",
+                "state_province": "DATA REDACTED",
+                "postal_code": "DATA REDACTED",
+                "country": "DATA REDACTED",
+                "phone": "DATA REDACTED",
+                "phone_ext": "DATA REDACTED",
+                "fax": "DATA REDACTED",
+                "fax_ext": "DATA REDACTED",
+                "email": "DATA REDACTED"
+            },
+            "tech": {
+                "name": "DATA REDACTED",
+                "organization": "DATA REDACTED",
+                "street": "DATA REDACTED",
+                "city": "DATA REDACTED",
+                "state_province": "DATA REDACTED",
+                "postal_code": "DATA REDACTED",
+                "country": "DATA REDACTED",
+                "phone": "DATA REDACTED",
+                "phone_ext": "DATA REDACTED",
+                "fax": "DATA REDACTED",
+                "fax_ext": "DATA REDACTED",
+                "email": "DATA REDACTED"
+            },
+            "billing": {
+                "name": "DATA REDACTED",
+                "organization": "DATA REDACTED",
+                "street": "DATA REDACTED",
+                "city": "DATA REDACTED",
+                "state_province": "DATA REDACTED",
+                "postal_code": "DATA REDACTED",
+                "country": "DATA REDACTED",
+                "phone": "DATA REDACTED",
+                "phone_ext": "DATA REDACTED",
+                "fax": "DATA REDACTED",
+                "fax_ext": "DATA REDACTED",
+                "email": "DATA REDACTED"
+            },
+            "raw": "Domain Name: CLOUDFLARE.COM\nRegistry Domain ID: 1542998887_DOMAIN_COM-VRSN\nRegistrar WHOIS Server: whois.cloudflare.com\nRegistrar URL: https://www.cloudflare.com\nUpdated Date: 2018-11-28T22:58:02Z\nCreation Date: 2009-02-17T22:07:54Z\nRegistrar Abuse Contact Email: registrar-abuse@cloudflare.com\nRegistrar Abuse Contact Phone: +1.4153197517\nRegistrar Registration Expiration Date: 2024-02-17T22:07:54Z\nRegistrar: Cloudflare, Inc.\nRegistrar IANA ID: 1910\nDomain Status: clientdeleteprohibited https://icann.org/epp#clientdeleteprohibited\nDomain Status: clienttransferprohibited https://icann.org/epp#clienttransferprohibited\nDomain Status: serverdeleteprohibited https://icann.org/epp#serverdeleteprohibited\nDomain Status: servertransferprohibited https://icann.org/epp#servertransferprohibited\nDomain Status: serverupdateprohibited https://icann.org/epp#serverupdateprohibited\nDomain Status: clientupdateprohibited https://icann.org/epp#clientupdateprohibited\nRegistry Registrant ID:\nRegistrant Name: DATA REDACTED \nRegistrant Organization: DATA REDACTED\nRegistrant Street: DATA REDACTED\nRegistrant City: DATA REDACTED\nRegistrant State/Province: DATA REDACTED\nRegistrant Postal Code: DATA REDACTED\nRegistrant Country: DATA REDACTED\nRegistrant Phone: DATA REDACTED\nRegistrant Phone Ext: DATA REDACTED\nRegistrant Fax: DATA REDACTED\nRegistrant Fax Ext: DATA REDACTED\nRegistrant Email: DATA REDACTED\nRegistry Admin ID:\nAdmin Name: DATA REDACTED \nAdmin Organization: DATA REDACTED\nAdmin Street: DATA REDACTED\nAdmin City: DATA REDACTED\nAdmin State/Province: DATA REDACTED\nAdmin Postal Code: DATA REDACTED\nAdmin Country: DATA REDACTED\nAdmin Phone: DATA REDACTED\nAdmin Phone Ext: DATA REDACTED\nAdmin Fax: DATA REDACTED\nAdmin Fax Ext: DATA REDACTED\nAdmin Email: DATA REDACTED\nRegistry Tech ID:\nTech Name: DATA REDACTED \nTech Organization: DATA REDACTED\nTech Street: DATA REDACTED\nTech City: DATA REDACTED\nTech State/Province: DATA REDACTED\nTech Postal Code: DATA REDACTED\nTech Country: DATA REDACTED\nTech Phone: DATA REDACTED\nTech Phone Ext: DATA REDACTED\nTech Fax: DATA REDACTED\nTech Fax Ext: DATA REDACTED\nTech Email: DATA REDACTED\nRegistry Billing ID:\nBilling Name: DATA REDACTED \nBilling Organization: DATA REDACTED\nBilling Street: DATA REDACTED\nBilling City: DATA REDACTED\nBilling State/Province: DATA REDACTED\nBilling Postal Code: DATA REDACTED\nBilling Country: DATA REDACTED\nBilling Phone: DATA REDACTED\nBilling Phone Ext: DATA REDACTED\nBilling Fax: DATA REDACTED\nBilling Fax Ext: DATA REDACTED\nBilling Email: DATA REDACTED\nName Server: ns3.cloudflare.com\nName Server: ns4.cloudflare.com\nName Server: ns5.cloudflare.com\nName Server: ns6.cloudflare.com\nName Server: ns7.cloudflare.com\n\nURL of the ICANN WHOIS Data Problem Reporting System: http://wdprs.internic.net\n\nFor more information on Whois status codes, please visit https://icann.org/epp\n\nCloudflare provides more than 13 million domains with the tools to give their global users a faster, more secure, and more reliable internet experience.\n\nNOTICE:\n\nData in the Cloudflare Registrar WHOIS database is provided to you by Cloudflare\nunder the terms and conditions at https://www.cloudflare.com/domain-registration-agreement/\n\nBy submitting this query, you agree to abide by these terms.\n\nRegister your domain name at https://www.cloudflare.com/registrar/\n"
+        }
+
+## WHOIS Server [/api/v1/whois/{domain}]
+## Find responsible WHOIS server for domain [GET]
++ Parameters
+    + domain: cloudflare.com (string) - domain name you wish to lookup
++ Response 200 (application/json)
+
+        {
+            "success": true,
+            "server": "whois.verisign-grs.com"
+        }
+
