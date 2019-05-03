@@ -84,6 +84,18 @@ def record(domain, server=None):
 				'message': 'The domain name provided is not valid. Please check and try again'
 			})
 		
+		global red
+		try:
+			if red.get(request.path):
+				log.info("Using cached value for {}".format(request.path))
+				return template("whois", {
+					'path': request.path,
+					'name': domain,
+					'data': red.get(request.path)
+				})
+		except:
+			pass
+
 		# Now, if they haven't set a server, we'll default to the TLD one
 		if not server:
 			server = get_whois(domain)
@@ -91,6 +103,7 @@ def record(domain, server=None):
 		log.info("Using server: {} for domain: {}".format(server, domain))
 		
 		l = lookup(domain, server)
+		red.set(request.path, l)
 		return template("whois", {
 			'path': request.path,
 			'name': domain,
