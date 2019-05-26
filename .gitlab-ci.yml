@@ -1,0 +1,13 @@
+image: quay.io/bukalapak/snowboard:latest
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
+pages:
+  script:
+  - snowboard html -o docs/index.html -t docs/alpha.html -q snowboard.apib
+  artifacts:
+    paths:
+    - docs
+  only:
+  - master
