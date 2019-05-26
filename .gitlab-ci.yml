@@ -1,11 +1,13 @@
-image: quay.io/bukalapak/snowboard:latest
+image: alpine:latest
 
 variables:
-  GIT_SUBMODULE_STRATEGY: recursive
+  SNOWBOARD_VERSION: 2.0.3
 
 pages:
   script:
-  - snowboard html -o docs/index.html -t docs/alpha.html -q snowboard.apib
+  - wget https://github.com/bukalapak/snowboard/releases/download/v${SNOWBOARD_VERSION}/snowboard-v${SNOWBOARD_VERSION}.linux-amd64.tar.gz
+  - tar -zxvf snowboard-v${SNOWBOARD_VERSION}.linux-amd64.tar.gz
+  - ./snowboard html -o docs/index.html -t docs/alpha.html -q snowboard.apib
   artifacts:
     paths:
     - docs
