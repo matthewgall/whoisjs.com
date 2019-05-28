@@ -3,6 +3,19 @@ services:
 
 stages:
   - build
+  - pages
+
+pages:
+  image: vergelijkgroep/snowboard
+  stage: build
+  script:
+    - mkdir public/
+    - cp favicon.ico public/
+    - snowboard html -o public/index.html -t docs/alpha.html -q snowboard.apib
+  artifacts:
+      paths:
+      - public
+
 
 build:
   image: docker:latest
