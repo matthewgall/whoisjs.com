@@ -9,6 +9,7 @@ pages:
   image: ubuntu:latest
   stage: build
   script:
+    - apt install wget
     - wget https://github.com/bukalapak/snowboard/releases/download/v2.0.3/snowboard-v2.0.3.linux-amd64.tar.gz
     - tar -zxvf snowboard-v2.0.3.linux-amd64.tar.gz
     - mkdir public/
