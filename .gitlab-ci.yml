@@ -14,7 +14,7 @@ pages:
     - tar -zxvf snowboard-v2.0.3.linux-amd64.tar.gz
     - mkdir public/
     - cp favicon.ico public/
-    - ./snowboard html -o public/index.html -t docs/alpha.html -q snowboard.apib
+    - ./snowboard html -o public/index.html -q snowboard.apib
   artifacts:
       paths:
       - public
