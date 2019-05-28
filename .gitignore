@@ -1,4 +1,4 @@
 .direnv/
 .vscode/
 .envrc
-docs/
+docs/index.html
