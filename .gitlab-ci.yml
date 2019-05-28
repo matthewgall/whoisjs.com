@@ -6,7 +6,7 @@ stages:
   - pages
 
 pages:
-  image: vergelijkgroep/snowboard
+  image: quay.io/bukalapak/snowboard:latest
   stage: build
   script:
     - mkdir public/
