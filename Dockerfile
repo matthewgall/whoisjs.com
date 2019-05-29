@@ -19,8 +19,8 @@ USER whoisjs
 WORKDIR /home/whoisjs
 COPY . /home/whoisjs
 
-RUN pip3 --user whoisjs install --upgrade pip && \
-    pip3 --user whoisjs install -r /home/whoisjs/requirements.txt
+RUN pip3 install --user --upgrade pip && \
+    pip3 install --user -r /home/whoisjs/requirements.txt
 
 EXPOSE 5000
 CMD ["python3", "/home/whoisjs/app.py"]
