@@ -11,6 +11,7 @@ RUN apk add --update \
 	whois \
 	wget \
 	curl \
+	shadow \
 	&& rm -rf /var/cache/apk/* \
 	&& useradd --create-home whoisjs
 
