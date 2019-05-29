@@ -11,13 +11,15 @@ RUN apk add --update \
 	whois \
 	wget \
 	curl \
-	&& rm -rf /var/cache/apk/*
+	&& rm -rf /var/cache/apk/* \
+	&& useradd --create-home whoisjs
 
-WORKDIR /app
-COPY . /app
+USER appuser
+WORKDIR /home/whoisjs
+COPY . /home/whoisjs
 
 RUN pip3 install --upgrade pip && \
-    pip3 install -r /app/requirements.txt
+    pip3 install -r /home/whoisjs/requirements.txt
 
 EXPOSE 5000
-CMD ["python3", "/app/app.py"]
+CMD ["python3", "/home/whoisjs/app.py"]
