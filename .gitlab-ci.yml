@@ -16,7 +16,7 @@ build:
 
 pages:
   image: ubuntu:latest
-  stage: deploy
+  stage: pages
   script:
     - apt update && apt -y install wget
     - wget https://github.com/bukalapak/snowboard/releases/download/v2.0.3/snowboard-v2.0.3.linux-amd64.tar.gz
