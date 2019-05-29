@@ -5,9 +5,18 @@ stages:
   - build
   - pages
 
+build:
+  image: docker:latest
+  stage: build
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE"
+
 pages:
   image: ubuntu:latest
-  stage: build
+  stage: deploy
   script:
     - apt update && apt -y install wget
     - wget https://github.com/bukalapak/snowboard/releases/download/v2.0.3/snowboard-v2.0.3.linux-amd64.tar.gz
@@ -18,13 +27,3 @@ pages:
   artifacts:
       paths:
       - public
-
-
-build:
-  image: docker:latest
-  stage: build
-  before_script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-  script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
-    - docker push "$CI_REGISTRY_IMAGE"
