@@ -15,7 +15,7 @@ RUN apk add --update \
 	&& rm -rf /var/cache/apk/* \
 	&& useradd --create-home whoisjs
 
-USER appuser
+USER whoisjs
 WORKDIR /home/whoisjs
 COPY . /home/whoisjs
 
