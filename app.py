@@ -114,8 +114,8 @@ def record(domain, server=None):
 			'message': "We encountered an error completing your request"
 		})
 
-@enable_cors
 @route('/api/v1/whois/<domain>')
+@enable_cors
 def get_whois_server(domain):
 	data = {
 		'success': False
@@ -134,9 +134,9 @@ def get_whois_server(domain):
 	data['success'] = True
 	return json.dumps(data)
 	
-@enable_cors
 @route('/api/v1/<domain>')
 @route('/api/v1/<domain>/<server>')
+@enable_cors
 def get_domain(domain, server=None):
 	data = {
 		'success': False
