@@ -177,7 +177,9 @@ def get_domain(domain, server=None):
 					data[r[1]] = {}
 				val = r[2].replace(' ', '_')
 				data[r[1]][val] = r[3].strip()
-	except NoneType:
+		data['success'] = True
+		data['raw'] = l
+	except AttributeError:
 		log.info("Unable to identify WHOIS information for {}".format(domain))
 		pass
 	
@@ -185,9 +187,6 @@ def get_domain(domain, server=None):
 		del data['domain']['status']
 	except:
 		pass
-	
-	data['success'] = True
-	data['raw'] = l
 	
 	# and now we cache it in redis
 	red.set(request.path, json.dumps(data), ex=3600)
