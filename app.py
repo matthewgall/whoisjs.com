@@ -167,15 +167,19 @@ def get_domain(domain, server=None):
 	l = lookup(domain, server)
 
 	# now we look to try and parse it
-	output = list(filter(None, l.split('\n')))
-	for o in output:
-		m = re.findall(r"^((domain|registry|registrar|creation|updated|admin|tech|billing)\s([\w\s]*)):(.*)", o.lower().strip())
-		if len(m) > 0:
-			r = m[0]
-			if not data.get(r[1]):
-				data[r[1]] = {}
-			val = r[2].replace(' ', '_')
-			data[r[1]][val] = r[3].strip()
+	try:
+		output = list(filter(None, l.split('\n')))
+		for o in output:
+			m = re.findall(r"^((domain|registry|registrar|creation|updated|admin|tech|billing)\s([\w\s]*)):(.*)", o.lower().strip())
+			if len(m) > 0:
+				r = m[0]
+				if not data.get(r[1]):
+					data[r[1]] = {}
+				val = r[2].replace(' ', '_')
+				data[r[1]][val] = r[3].strip()
+	except NoneType:
+		log.info("Unable to identify WHOIS information for {}".format(domain))
+		pass
 	
 	try:
 		del data['domain']['status']
