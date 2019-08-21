@@ -75,44 +75,39 @@ def index():
 @route('/<domain>', ('GET'))
 @route('/<domain>/<server>', ('GET'))
 def record(domain, server=None):
+	global red
 	try:
-		try:
-			if not validators.domain(domain):
-				raise ValueError
-		except:
-			return template("error", {
-				'message': 'The domain name provided is not valid. Please check and try again'
-			})
-		
-		global red
-		try:
-			if red.get(request.path):
-				log.info("Using cached value for {}".format(request.path))
-				return template("whois", {
-					'path': request.path,
-					'name': domain,
-					'data': red.get(request.path)
-				})
-		except:
-			pass
-
-		# Now, if they haven't set a server, we'll default to the TLD one
-		if not server:
-			server = get_whois(domain)
-
-		log.info("Using server: {} for domain: {}".format(server, domain))
-		
-		l = lookup(domain, server)
-		red.set(request.path, l, ex=3600)
-		return template("whois", {
-			'path': request.path,
-			'name': domain,
-			'data': l
-		})
+		if not validators.domain(domain):
+			raise ValueError
 	except:
 		return template("error", {
-			'message': "We encountered an error completing your request"
+			'message': 'The domain name provided is not valid. Please check and try again'
 		})
+	
+	try:
+		if red.get(request.path):
+			log.info("Using cached value for {}".format(request.path))
+			return template("whois", {
+				'path': request.path,
+				'name': domain,
+				'data': red.get(request.path)
+			})
+	except:
+		pass
+
+	# Now, if they haven't set a server, we'll default to the TLD one
+	if not server:
+		server = get_whois(domain)
+
+	log.info("Using server: {} for domain: {}".format(server, domain))
+	
+	l = lookup(domain, server)
+	red.set(request.path, l, ex=3600)
+	return template("whois", {
+		'path': request.path,
+		'name': domain,
+		'data': l
+	})
 
 @route('/api/v1/whois/<domain>')
 @enable_cors
@@ -201,10 +196,7 @@ if __name__ == '__main__':
 	parser.add_argument("-p", "--port", default=os.getenv('PORT', 5000), help="server port")
 
 	# Redis settings
-	parser.add_argument("--redis-url", default=os.getenv('REDIS_URL', None), help="redis url")
-	parser.add_argument("--redis-host", default=os.getenv('REDIS_HOST', 'redis'), help="redis hostname")
-	parser.add_argument("--redis-port", default=os.getenv('REDIS_PORT', 6379), help="redis port")
-	parser.add_argument("--redis-pw", default=os.getenv('REDIS_PW', ''), help="redis password")
+	parser.add_argument("--redis", default=os.getenv('REDIS', None), help="redis url")
 	parser.add_argument("--redis-ttl", default=os.getenv('REDIS_TTL', 60), help="redis time to cache records")
 
 	# Application settings
@@ -221,11 +213,10 @@ if __name__ == '__main__':
 	log = logging.getLogger(__name__)
 
 	try:
-		if args.redis_url:
-			global red
-			red = redis.from_url(args.redis_url)
+		if args.redis:
+			red = redis.from_url(args.redis)
 	except:
-		log.fatal("Unable to connect to redis: {}".format(args.redis_url))
+		log.fatal("Unable to connect to redis: {}".format(args.redis))
 
 	try:
 		app = default_app()
