@@ -13,7 +13,9 @@ build:
     - docker login -u _json_key -p "$(cat $GCR_JSON)" gcr.io
   script:
     - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker tag "$CI_REGISTRY_IMAGE" gcr.io/whoisjs/app:latest
     - docker push "$CI_REGISTRY_IMAGE"
+    - docker push gcr.io/whoisjs/app:latest
 
 pages:
   image: ubuntu:latest
