@@ -86,7 +86,7 @@ def record(domain, server=None):
 	
 	try:
 		if red.get(request.path):
-			log.info("Using cached value for {}".format(request.path))
+			log.debug("Using cached value for {}".format(request.path))
 			return template("whois", {
 				'path': request.path,
 				'name': domain,
@@ -99,7 +99,7 @@ def record(domain, server=None):
 	if not server:
 		server = get_whois(domain)
 
-	log.info("Using server: {} for domain: {}".format(server, domain))
+	log.debug("Using server: {} for domain: {}".format(server, domain))
 	
 	l = lookup(domain, server)
 	try:
@@ -153,7 +153,7 @@ def get_domain(domain, server=None):
 	global red
 	try:
 		if red.get(request.path):
-			log.info("Using cached value for {}".format(request.path))
+			log.debug("Using cached value for {}".format(request.path))
 			return red.get(request.path)
 	except:
 		pass
@@ -162,7 +162,7 @@ def get_domain(domain, server=None):
 	if not server:
 		server = get_whois(domain)
 
-	log.info("Using server: {} for domain: {}".format(server, domain))
+	log.debug("Using server: {} for domain: {}".format(server, domain))
 	l = lookup(domain, server)
 
 	# now we look to try and parse it
@@ -179,7 +179,7 @@ def get_domain(domain, server=None):
 		data['success'] = True
 		data['raw'] = l
 	except AttributeError:
-		log.info("Unable to identify WHOIS information for {}".format(domain))
+		log.debug("Unable to identify WHOIS information for {}".format(domain))
 		pass
 	
 	try:
@@ -201,6 +201,7 @@ if __name__ == '__main__':
 	# Server settings
 	parser.add_argument("-i", "--host", default=os.getenv('HOST', '127.0.0.1'), help="server ip")
 	parser.add_argument("-p", "--port", default=os.getenv('PORT', 5000), help="server port")
+	parser.add_argument("-e", "--engine", default=os.getenv('ENGINE', 'wsgiref', help="server engine"))
 
 	# Redis settings
 	parser.add_argument("--redis", default=os.getenv('REDIS', None), help="redis url")
@@ -227,6 +228,6 @@ if __name__ == '__main__':
 
 	try:
 		app = default_app()
-		app.run(host=args.host, port=args.port, server='tornado')
+		app.run(host=args.host, port=args.port, server=args.engine)
 	except:
 		log.error("Unable to start server on {}:{}".format(args.host, args.port))
