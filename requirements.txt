@@ -1,5 +1,6 @@
 bottle
 tornado
+paste
 redis
 pylint
 validators
