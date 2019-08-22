@@ -102,7 +102,11 @@ def record(domain, server=None):
 	log.info("Using server: {} for domain: {}".format(server, domain))
 	
 	l = lookup(domain, server)
-	red.set(request.path, l, ex=3600)
+	try:
+		red.set(request.path, l, ex=3600)
+	except:
+		pass
+	
 	return template("whois", {
 		'path': request.path,
 		'name': domain,
@@ -184,7 +188,10 @@ def get_domain(domain, server=None):
 		pass
 	
 	# and now we cache it in redis
-	red.set(request.path, json.dumps(data), ex=3600)
+	try:
+		red.set(request.path, json.dumps(data), ex=3600)
+	except:
+		pass
 	return json.dumps(data)
 
 if __name__ == '__main__':
