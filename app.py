@@ -201,7 +201,7 @@ if __name__ == '__main__':
 	# Server settings
 	parser.add_argument("-i", "--host", default=os.getenv('HOST', '127.0.0.1'), help="server ip")
 	parser.add_argument("-p", "--port", default=os.getenv('PORT', 5000), help="server port")
-	parser.add_argument("-e", "--engine", default=os.getenv('ENGINE', 'wsgiref', help="server engine"))
+	parser.add_argument("-e", "--engine", default=os.getenv('ENGINE', 'wsgiref'), help="server engine")
 
 	# Redis settings
 	parser.add_argument("--redis", default=os.getenv('REDIS', None), help="redis url")
