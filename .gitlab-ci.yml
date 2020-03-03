@@ -1,18 +1,25 @@
-services:
-  - docker:dind
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_TLS_CERTDIR: ""
 
 stages:
   - build
   - pages
 
 build:
-  image: docker:latest
+  image: jonoh/docker-buildx-qemu:latest
   stage: build
+  services:
+    - docker:dind
   before_script:
     - docker login -u $SCALEWAY_USER -p $SCALEWAY_TOKEN $SCALEWAY_HOST
+    - update-binfmts --enable
+    - docker buildx create --driver docker-container --use
+    - docker buildx inspect --bootstrap
   script:
-    - docker build --pull -t $SCALEWAY_HOST/whoisjs:latest .
-    - docker push $SCALEWAY_HOST/whoisjs:latest
+    - docker buildx build --platform linux/amd64,linux/arm64,linux/arm -t $SCALEWAY_HOST/whoisjs:latest --push .
+  only:
+    - master
 
 pages:
   image: ubuntu:latest
