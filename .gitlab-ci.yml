@@ -1,5 +1,5 @@
 services:
-  - docker:stable-dind
+  - docker:dind
 
 stages:
   - build
