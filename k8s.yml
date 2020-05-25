@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${NAME}
+  labels:
+    app: ${NAME}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${NAME}
+  template:
+    metadata:
+      labels:
+        app: ${NAME}
+    spec:
+      containers:
+      - name: ${NAME}
+        image: ${IMAGE}:latest
+        ports:
+        - containerPort: 5000
+        env:
+          - name: HOST
+            value: '0.0.0.0'
+          - name: REDIS
+            value: redis://${NAME}-redis.${NAMESPACE}.svc.cluster.local:6379
+          - name: REDIS_TTL
+            value: '604800'
+          - name: ENGINE
+            value: 'paste'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${NAME}-redis
+  labels:
+    app: ${NAME}-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${NAME}-redis
+  template:
+    metadata:
+      labels:
+        app: ${NAME}-redis
+    spec:
+      containers:
+      - name: ${NAME}-redis
+        image: redis:latest
+        ports:
+        - containerPort: 6379
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ${NAME}-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  labels:
+    "use-cloudflare-solver": "true"
+spec:
+  rules:
+  - host: "whoisjs.com"
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: ${NAME}
+          servicePort: http
+  - host: "www.whoisjs.com"
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: ${NAME}
+          servicePort: http
+  tls:
+  - hosts:
+    - 'whoisjs.com'
+    - 'www.whoisjs.com'
+    secretName: ${NAME}-cert
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${NAME}
+spec:
+  ports:
+  - name: http
+    targetPort: 5000
+    port: 80
+  selector:
+    app: ${NAME}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${NAME}-redis
+spec:
+  ports:
+  - name: tcp
+    targetPort: 6379
+    port: 6379
+  selector:
+    app: ${NAME}-redis

@@ -12,12 +12,12 @@ build:
   services:
     - docker:dind
   before_script:
-    - docker login -u $SCALEWAY_USER -p $SCALEWAY_TOKEN $SCALEWAY_HOST
+    - docker login -u $DOCKER_USER -p $DOCKER_TOKEN
     - update-binfmts --enable
     - docker buildx create --driver docker-container --use
     - docker buildx inspect --bootstrap
   script:
-    - docker buildx build -t $SCALEWAY_IMAGE:latest --push .
+    - docker buildx build -t matthewgall/whoisjs.com:latest --push .
   only:
     - master
 
