@@ -7,19 +7,15 @@ stages:
   - pages
 
 build:
-  image: jonoh/docker-buildx-qemu:latest
+  image: docker:latest
   stage: build
   services:
     - docker:dind
   before_script:
-    - docker login -u $DOCKER_USER -p $DOCKER_TOKEN
-    - update-binfmts --enable
-    - docker buildx create --driver docker-container --use
-    - docker buildx inspect --bootstrap
+    - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_TOKEN"    
   script:
-    - docker buildx build -t matthewgall/whoisjs.com:latest --push .
-  only:
-    - master
+    - docker build --pull -t matthewgall/whoisjs.com:latest .
+    - docker push matthewgall/whoisjs.com:latest
 
 pages:
   image: ubuntu:latest
