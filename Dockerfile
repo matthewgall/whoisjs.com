@@ -1,5 +1,5 @@
-FROM multiarch/alpine:armhf-edge
-MAINTAINER Matthew Gall <me@matthewgall.com>
+FROM alpine:latest
+MAINTAINER Matthew Gall <docker@matthewgall.com>
 
 RUN apk add --update \
 	build-base \
@@ -8,19 +8,13 @@ RUN apk add --update \
 	py-pip \
 	openssl-dev \
 	libffi-dev \
-	whois \
-	wget \
-	curl \
-	shadow \
-	&& rm -rf /var/cache/apk/* \
-	&& useradd --create-home whoisjs
+	&& rm -rf /var/cache/apk/*
 
-USER whoisjs
-WORKDIR /home/whoisjs
-COPY . /home/whoisjs
+WORKDIR /app
+COPY . /app
 
-RUN pip3 install --user --upgrade pip && \
-    pip3 install --user -r /home/whoisjs/requirements.txt
+RUN pip3 install --upgrade pip && \
+    pip3 install -r /app/requirements.txt
 
 EXPOSE 5000
-CMD ["python3", "/home/whoisjs/app.py"]
+CMD ["python3", "/app/app.py"]
