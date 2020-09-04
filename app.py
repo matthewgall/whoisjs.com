@@ -76,13 +76,6 @@ def index():
 @route('/<domain>/<server>', ('GET'))
 def record(domain, server=None):
 	global red
-	try:
-		if not validators.domain(domain):
-			raise ValueError
-	except:
-		return template("error", {
-			'message': 'The domain name provided is not valid. Please check and try again'
-		})
 	
 	try:
 		if red.get(request.path):
@@ -121,12 +114,6 @@ def get_whois_server(domain):
 	}
 
 	response.content_type = 'application/json'
-	try:
-		if not validators.domain(domain):
-			raise ValueError
-	except:
-		data['error'] = "The domain name provided is not valid"
-		return json.dumps(data)
 
 	# Now, if they haven't set a server, we'll default to the TLD one
 	data['server'] = get_whois(domain)
@@ -142,13 +129,6 @@ def get_domain(domain, server=None):
 	}
 
 	response.content_type = 'application/json'
-	
-	try:
-		if not validators.domain(domain):
-			raise ValueError
-	except:
-		data['error'] = "The domain name provided is not valid"
-		return json.dumps(data)
 
 	global red
 	try:
