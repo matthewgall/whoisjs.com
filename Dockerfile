@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM multiarch/alpine:armhf-edge
 MAINTAINER Matthew Gall <me@matthewgall.com>
 
 RUN apk add --update \
