@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: ${NAME}
-        image: ${IMAGE}:latest
+        image: ${IMAGE}:edge
         ports:
         - containerPort: 5000
         env:
@@ -57,7 +57,7 @@ metadata:
   name: ${NAME}-ingress
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: zerossl-prod
   labels:
     "use-cloudflare-solver": "true"
 spec:
