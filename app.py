@@ -169,7 +169,7 @@ def get_domain(domain, server=None):
 	
 	# and now we cache it in redis
 	try:
-		red.set(request.path, json.dumps(data), ex=3600)
+		red.set(request.path, json.dumps(data), ex=args.redis_ttl)
 	except:
 		pass
 	return json.dumps(data)
